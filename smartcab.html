@@ -13668,7 +13668,7 @@ SZKkWpiYkiRJkiRJUi1MTEmSJEmSJKkWJqYkSZIkSZJUi/8PDPqAwCj8CBgAAAAASUVORK5CYII=
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><strong>Answer:</strong></p>
 <ul>
-<li>'waypoint' and 'deadline' are the features most relevant for learning efficiency. On the other hand, 'inputs' is the feature most relevant to safety. These features help the smart cab determine type of action, number of actions required to reach destination safely. Hence these are appropriate for modelling the Smartcab in the environment.</li>
+<li>'waypoint' and 'inputs' are the features most relevant for learning efficiency. In 'inputs',inputs['light'] , inputs['oncoming'],inputs['left'] are the feature most relevant to safety. These features help the smart cab determine type of action, number of actions required to reach destination safely. Hence these are appropriate for modelling the Smartcab in the environment. 'deadline' appears to be a continuos variable and hence might not be relevant for learning. Also inputs['right'] also doesn't need to be considered as a vehicle can move right without waiting for any inputs.</li>
 </ul>
 
 </div>
@@ -13702,7 +13702,7 @@ SZKkWpiYkiRJkiRJUi1MTEmSJEmSJKkWJqYkSZIkSZJUi/8PDPqAwCj8CBgAAAAASUVORK5CYII=
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>Answer:</strong> If a state is defined using the features 'waypoint','deadline'and 'inputs' the size of the stage space is 4. Yes, I think the driving agent could learn a policy for each possible stage within a reasonable number of training trails.</p>
+<p><strong>Answer:</strong> If a state is defined using the features (waypoint, inputs['light'] , inputs['oncoming'],inputs['left']) the size of the stage space is 96. Yes, I think the driving agent could learn a policy for each possible stage within a reasonable number of training trails.</p>
 
 </div>
 </div>
@@ -18697,29 +18697,33 @@ kiRJkqSuMDAlSZIkSZKkrjAwJUmSJEmSpK74L/ld85kjFcL4AAAAAElFTkSuQmCC
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><strong>Answer:</strong></p>
 <ul>
-<li><p>Below are few examples of states for an optimal policy :
-  'left', 'green', 'None', 'None'
-  'left', 'green, right, None'
-  'right', red', 'None', 'None'
-  'right', 'green', 'forward', 'left'</p>
+<li>Below are few examples of states for an optimal policy :
+  ('right', 'red', None, None) -- forward : -2.45 -- right : 1.34 -- None : 0.35 -- left : -2.30
+  ('left', 'red', 'right', 'left')-- forward : -0.05 -- right : 0.01 -- None : 0.22 -- left : -0.20
+  ('forward', 'red', 'right', 'right') -- forward : -0.05 -- right : 0.01 -- None : 0.10 -- left : -0.20</li>
+</ul>
+<ul>
+<li><p>Taking the state ('right', 'red', None, None) -- forward : -2.45 -- right : 1.34 -- None : 0.35 -- left : -2.30, the policy seems to be correct as below as right : 1.34 is the highest value. Since it is red, the smart cab can still move right without any violations.</p>
 </li>
-<li><p>Taking the state "'right', red', 'None', 'None'", the policy seems to be correct as below</p>
-<p>('right', 'red', None, None)
-   -- forward : -2.45
-   -- right : 1.34
-   -- None : 0.35
-   -- left : -2.30</p>
+<li><p>Similarly taking the state ('left', 'red', 'right', 'left')-- forward : -0.05 -- right : 0.01 -- None : 0.22 -- left : -0.20, the policy seems to be correct as None : 0.22. Since it is red, the smart cab did not move in any direction which is correct.</p>
 </li>
-<li><p>If the light is red, the reward is negative for any action that makes the smartcab move. The reward is positive for other actions where the smart cab is not moving or moving to right.</p>
+</ul>
+<ul>
+<li><p>There are few states where the policy is different than that would be expected from an optimal policy.</p>
 </li>
-<li><p>There aren't any states where the policy is different than that would be expected from an optimal policy.</p>
-</li>
-<li><p>Taking the state "'right', red', 'None', 'None'", the policy seems to be correct as below</p>
-<p>('right', 'red', None, None)
-   -- forward : -2.45
-   -- right : 1.34
-   -- None : 0.35
-   -- left : -2.30</p>
+<li><p>Taking the below state , the policy doesn't seems to be correct as below</p>
+<p>('right', 'green', 'right', 'forward')
+   -- forward : 0.03
+   -- right : 0.00
+   -- None : -0.05
+   -- left : -0.31</p>
+<p>The smart cab should be moving to right and the light is green, however the smart cab doesn't move right,it appears to be going forward. Policy is forward : 0.03</p>
+<p>('left', 'green', 'forward', 'left')
+   -- forward : 0.01
+   -- right : 0.10
+   -- None : -0.10
+   -- left : -0.30</p>
+<p>In the above example too the cab should be moving to left and the light is green, however the smart cab doesn't move left, it appears to be going to right. Policy is right : 0.10</p>
 </li>
 </ul>
 
@@ -18754,8 +18758,8 @@ kiRJkqSuMDAlSZIkSZKkrjAwJUmSJEmSpK74L/ld85kjFcL4AAAAAElFTkSuQmCC
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><strong>Answer:</strong></p>
 <ul>
-<li>The smart cab already has a 'waypoint', which is the direction the Smartcab should drive leading to the destination, relative to the Smartcab's heading. Hence this doesn't need the use of future rewards.</li>
-<li>Also the environment is changing hence future rewards doesn't help in the Q-Learning algorithm.</li>
+<li>The smart cab sees the world interms of states. And the states doesn't seem to be linked to specific intersections. So states cannot be related to distance between them and destination. Hence future rewards cannot be propagated back to states with respect to destination.</li>
+<li>Also the environment is changing i.e. the destination for each intersection seems to be changing based on the intesection point and other factors. Hence future rewards doesn't help in the Q-Learning algorithm.</li>
 </ul>
 
 </div>

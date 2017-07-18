@@ -42,7 +42,7 @@ class LearningAgent(Agent):
         # If 'testing' is True, set epsilon and alpha to 0
         if (testing == False):
             self.t = self.t + 1
-            self.epsilon = math.exp(-self.alpha * self.t)
+            self.epsilon = math.exp(-0.005 * self.t)
             #self.epsilon = self.epsilon - 0.05
         else:
             self.epsilon = 0
@@ -126,7 +126,8 @@ class LearningAgent(Agent):
         elif r < self.epsilon*100:
                 action = random.choice(self.valid_actions)
         else:
-             action = self.Q[state].keys()[self.Q[state].values().index(self.get_maxQ(state))]
+             #action = self.Q[state].keys()[self.Q[state].values().index(self.get_maxQ(state))]
+             action = random.choice([action for action, q_value in self.Q[state].iteritems() if q_value == self.get_maxQ(state)])
 
         return action
 
